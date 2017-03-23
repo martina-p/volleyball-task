@@ -1,7 +1,7 @@
 clc;
 clear all;
 
-% ========= LOGFILES ========= %
+% ========= SET LOGFILES ========= %
 subjectID=input('Participant number: ');
 DateTime = datestr(now,'yyyymmdd-HHMM');
 if ~exist('Logfiles', 'dir')
@@ -10,16 +10,20 @@ end
 resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));
 backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat')); %save under name composed by number of subject and session
 
+%psychExpInit; % Start all PTB-related stuff
+
 % ========= PARAMETERS ========= %
 
 nblocks=2;
-ntrials=10;
 nresp=2;
-%numTrials=[8,10,16,36];                                             %possible nr of trials per block
-%thisBlockTrials=numTrials(randi(numel(numTrials)));                 %randomly determines num trials per block
+numTrials=[2,4,6,8];                                                %possible nr of trials per block
+thisBlockTrials=numTrials(randi(numel(numTrials)));                 %randomly determines num trials per block
 
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];     %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                       %Shuffle contingencies for each block
+        
+%Screen('DrawTexture', win, texLose);
+%Screen('Flip',win);
 
 % ========= LOOP ========= %
 trialnb = 0;
@@ -29,7 +33,7 @@ for x=1:nblocks
     trials_P_OA = zeros(10,2);              %Generate pseudo-random sequence of outcomes for Action 1 = trials_P_OA1
     
     for j=1:nresp                           %Loop over actions
-        for i=1:ntrials                     %Loop over trials
+        for i=1:thisBlockTrials                     %Loop over trials
             if i < (P_OA(:,j)+1)            %Assign correct and incorrect outcomes (basically overwrite trials_P_OA)
             trials_P_OA(i,j) = 1;
             else
@@ -42,7 +46,7 @@ for x=1:nblocks
         n_A1 = 1;
         n_A2 = 1;
 
-        for k=1:ntrials
+        for k=1:thisBlockTrials
             trialnb = trialnb + 1
             blocknb(trialnb,1) = x
             thistrial(trialnb,1) = k
@@ -71,5 +75,6 @@ subject(1:trialnb,1) = subjectID;
 data = [subject, blocknb, thistrial]; 
 save(resultname, 'data');
 
-% ========= DISPLAY FUNCTIONS  ========= %
-  
+
+%Close screen
+Screen('CloseAll');
