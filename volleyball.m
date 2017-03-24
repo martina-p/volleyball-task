@@ -12,7 +12,7 @@ backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', Da
 
 % ========= PARAMETERS ========= %
 
-nblocks=2;
+nblocks=4;
 nresp=2;
 numTrials=[2,4,6,8];                                                %possible nr of trials per block
 thisBlockTrials=numTrials(randi(numel(numTrials)));                 %randomly determines num trials per block
@@ -22,10 +22,7 @@ condOrder = randsrc(1,nblocks,[1 0]);                               %vector of 0
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];     %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                       %Shuffle contingencies for each block
 
-psychExpInit; % Start all PTB-related stuff
-Screen('DrawTexture', win, texPlay,[],[0 0 100 100]);
-%Screen('DrawTexture', win, texPause,[],[100 0 xc yLeft]);
-Screen('Flip',win);
+%psychExpInit; % Start all PTB-related stuff
 
 % ========= LOOP ========= %
 trialnb = 0;
@@ -34,8 +31,14 @@ for x=1:nblocks
     P_OA = conTableShuffled(x,:);           %Define P_OA = {play, do not play} for this block
     trials_P_OA = zeros(10,2);              %Generate pseudo-random sequence of outcomes for Action 1 = trials_P_OA1
     
+    if condOrder(:,x)==0
+       disp('This is a play_pause block')
+    elseif condOrder(:,x)==1
+       disp('This is a pause_play block')
+    end
+    
     for j=1:nresp                           %Loop over actions
-        for i=1:thisBlockTrials                     %Loop over trials
+        for i=1:thisBlockTrials              %Loop over trials
             if i < (P_OA(:,j)+1)            %Assign correct and incorrect outcomes (basically overwrite trials_P_OA)
             trials_P_OA(i,j) = 1;
             else
