@@ -1,7 +1,7 @@
 clc;
 clear all;
 
-% ========= SET LOGFILES ========= 
+% ========= SET LOGFILES ========= %
 subjectID=input('Participant number: ');
 DateTime = datestr(now,'yyyymmdd-HHMM');
 if ~exist('Logfiles', 'dir')
@@ -9,6 +9,8 @@ if ~exist('Logfiles', 'dir')
 end
 resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));
 backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat')); %save under name composed by number of subject and session
+
+%psychExpInit; % Start all PTB-related stuff
 
 % ========= PARAMETERS ========= %
 
@@ -21,11 +23,9 @@ condOrder = randsrc(1,nblocks,[1 0]);                               %vector of 0
 
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];     %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                       %Shuffle contingencies for each block
-
-psychExpInit; % Start all PTB-related stuff
-Screen('DrawTexture', win, texPlay,[],[0 0 100 100]);
-%Screen('DrawTexture', win, texPause,[],[100 0 xc yLeft]);
-Screen('Flip',win);
+        
+%Screen('DrawTexture', win, texLose);
+%Screen('Flip',win);
 
 % ========= LOOP ========= %
 trialnb = 0;
