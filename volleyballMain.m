@@ -44,6 +44,9 @@ for x=1:nblocks
             end;
         end;
     end;
+    
+    %Shuffle trials_P_OA
+    trials_P_OA_shuffled = trials_P_OA(randperm(10),:);
 
         k = 1;
         noresp = 0;
@@ -72,17 +75,17 @@ for x=1:nblocks
             
                %Set outcomes according to A-O contingencies
                 if n == 1                                  
-                    if trials_P_OA(n_A1,n) == 1
+                    if trials_P_OA_shuffled(n_A1,n) == 1
                     disp('WIN');
                     else
-                    disp('LOST')
+                    disp('LOST');
                     end;
                     n_A1 = n_A1 + 1
                 elseif n == 2 
-                    if trials_P_OA(n_A2,n) == 1
+                    if trials_P_OA_shuffled(n_A2,n) == 1
                     disp('WIN');
                     else
-                    disp('LOST')
+                    disp('LOST');
                     end;
                     n_A2 = n_A2 + 1
                 end;
