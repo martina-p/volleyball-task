@@ -12,9 +12,9 @@ backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', Da
 
 % ========= PARAMETERS ========= %
 
-nblocks=4;
+nblocks=1;
 nresp=2;
-nTrials=10
+nTrials=10;
 %numTrials=[2,4,6,8];                                                %possible nr of trials per block
 %thisBlockTrials=numTrials(randi(numel(numTrials)));                 %randomly determines num trials per block
 condOrder = randsrc(1,nblocks,[1 0]);                               %vector of 0s and 1s randomly distributed in equal number
@@ -23,7 +23,7 @@ condOrder = randsrc(1,nblocks,[1 0]);                               %vector of 0
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];     %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                       %Shuffle contingencies for each block
 
-%psychExpInit; % Start all PTB-related stuff
+psychExpInit; % Start all PTB-related stuff
 
 % ========= LOOP ========= %
 trialnb = 0;
@@ -45,8 +45,7 @@ for x=1:nblocks
         end;
     end;
     
-    %Shuffle trials_P_OA
-    trials_P_OA_shuffled = trials_P_OA(randperm(10),:);
+    trials_P_OA_shuffled = trials_P_OA(randperm(10),:); %Shuffle trials_P_OA
 
         k = 1;
         noresp = 0;
@@ -58,36 +57,51 @@ for x=1:nblocks
             blocknb(trialnb,1) = x
             thistrial(trialnb,1) = k
             
-            %if condOrder(:,x)==0
-             %Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
-             %Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
-             %Screen('Flip',win);
-            %elseif condOrder(:,x)==1
-             %Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
-             %Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
-             %Screen('Flip',win);
-            %end
+            RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
             
-            %RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
-            %[secs, keyCode, deltaSecs] = KbWait([],2); %wait for 1 key press
-           
-            n = input('Play? ');
+            if condOrder(:,x)==0
+             Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
+             Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
+             Screen('Flip',win);
+            elseif condOrder(:,x)==1
+             Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
+             Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
+             Screen('Flip',win);
+            end
+            
+            [secs, keyCode, deltaSecs] = KbWait([],2) %wait for 1 key press
+            if keyCode(:,37) == 1 %leftArrow
+                n = 1;
+            elseif keyCode(:,39) == 1 %rightArrow
+                n = 2;
+            end
+            
+            %n = input('Play? ');
+            %Check response
             
                %Set outcomes according to A-O contingencies
                 if n == 1                                  
                     if trials_P_OA_shuffled(n_A1,n) == 1
-                    disp('WIN');
+                    Screen('DrawTexture', win, texWin,[]);
+                    Screen('Flip',win);
+                    WaitSecs(1);
                     else
-                    disp('LOST');
+                    Screen('DrawTexture', win, texLose,[]);    
+                    Screen('Flip',win);
+                    WaitSecs(1);
                     end;
-                    n_A1 = n_A1 + 1
+                    n_A1 = n_A1 + 1;
                 elseif n == 2 
                     if trials_P_OA_shuffled(n_A2,n) == 1
-                    disp('WIN');
+                    Screen('DrawTexture', win, texWin,[]);    
+                    Screen('Flip',win);
+                    WaitSecs(1);
                     else
-                    disp('LOST');
+                    Screen('DrawTexture', win, texLose,[]);    
+                    Screen('Flip',win);
+                    WaitSecs(1);
                     end;
-                    n_A2 = n_A2 + 1
+                    n_A2 = n_A2 + 1;
                 end;
                 k = k + 1;
                 

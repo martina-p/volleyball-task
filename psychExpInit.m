@@ -13,7 +13,9 @@
     red= [255 0 0]; 
     
     % Keyboard parameters
-    KbName('UnifyKeyNames'); 
+    KbName('UnifyKeyNames');
+    keyLeft=KbName('leftArrow');
+    keyRight=KbName('rightArrow');
     
     % Start PTB
     screens=Screen('Screens');
