@@ -12,6 +12,9 @@
     black = [0 0 0]; 
     red= [255 0 0]; 
     
+    % Keyboard parameters
+    KbName('UnifyKeyNames'); 
+    
     % Start PTB
     screens=Screen('Screens');
     Screen('Preference', 'SkipSyncTests', 2);
@@ -20,16 +23,6 @@
     winRect = [0,0,800,600];
     HideCursor;
 
-
-%% Coordinates
-    [xc, yc] = RectCenterd(winRect);    %Get coordinates of screen center 
-    xOffsetLeft = xc+300;               %for left image
-    xOffsetRight = xc-300;              %for right image
-    yOffset = 450;
-    
-%% keyboard parameters
-    KbName('UnifyKeyNames'); % Use same key codes across operating systems for better portability % usa questo
-    
 %% Load images
 
     Lose=imread(fullfile('Stimfiles', 'Lose.png')); 
@@ -40,18 +33,31 @@
     texPlay = Screen('MakeTexture', win, Play);
     Pause=imread(fullfile('Stimfiles', 'Pause.png')); 
     texPause = Screen('MakeTexture', win, Pause);
-
-    [imagePlayHeight, imagePlayWidth, colorChannels]= size(Play);
-    [imagePauseHeight, imagePauseWidth, colorChannels]= size(Pause);
-    [imageLoseHeight, imageLoseWidth, colorChannels]= size(Lose);
-    [imageWinHeight, imageWinWidth, colorChannels]= size(Win);
     
-    %Position play_pause
-    imagePlayPauseRectLeft = [xOffsetLeft, yOffset, xOffsetLeft+imagePlayWidth, yOffset+imagePlayHeight];
-    imagePlayPauseRectRight = [xOffsetRight, yOffset, xOffsetRight+imagePauseWidth, yOffset+imagePauseHeight];
-    Screen('DrawTexture', win, texPlay,[],imagePlayPauseRectLeft);
-    Screen('DrawTexture', win, texPause,[],imagePlayPauseRectRight);
+%% Coordinates
+    % Size of stimuli (depends on file dimensions)
+    sizePlay = 110;
+    sizePause = 108;
+    sizeWin = 117;
+    sizeLose = 83;
+    
+    [xc, yc] = RectCenterd(winRect);    %get coordinates of screen center
+    xcOffsetLeft = xc+300;              %to position left image
+    xcOffsetRight = xc+600;             %to position right image
+    ycOffset = yc+150;
+
+    %Screen when Play is on the left and Pause is on the right
+    imageRectPlayLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+sizePlay, ycOffset+sizePlay];
+    imageRectPauseRight = [xcOffsetRight, ycOffset, xcOffsetRight+sizePause, ycOffset+sizePause];
+    
+    %Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
+    %Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
+    %Screen('Flip',win);
+
+    %Screen when Pause is on the left and Play is on the right
+    imageRectPlayRight = [xcOffsetRight, ycOffset, xcOffsetRight+sizePlay, ycOffset+sizePlay];
+    imageRectPauseLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+sizePause, ycOffset+sizePause];
+
+    Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
+    Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
     Screen('Flip',win);
-
-    %Position pause_play
-

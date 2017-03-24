@@ -1,6 +1,6 @@
- %% PsychToolBox parameters
+ %% PTB parameters
 
-    % screen Preferences
+    % Screen Preferences
     Screen('Preference', 'VBLTimestampingMode', 3);%Add this to avoid timestamping problems
     Screen('Preference', 'DefaultFontName', 'Geneva');
     Screen('Preference', 'DefaultFontSize', 30); %fontsize
@@ -12,7 +12,10 @@
     black = [0 0 0]; 
     red= [255 0 0]; 
     
-    % Start PsychToolBox
+    % Keyboard parameters
+    KbName('UnifyKeyNames'); 
+    
+    % Start PTB
     screens=Screen('Screens');
     Screen('Preference', 'SkipSyncTests', 2);
     screenNumber=max(screens); % Main screen
@@ -20,35 +23,36 @@
     winRect = [0,0,800,600];
     HideCursor;
 
+%% Load images
 
+    Lose=imread(fullfile('Stimfiles', 'Lose.png')); 
+    texLose = Screen('MakeTexture', win, Lose);
+    Win=imread(fullfile('Stimfiles', 'Win.png')); 
+    texWin = Screen('MakeTexture', win, Win);
+    Play=imread(fullfile('Stimfiles', 'Play.png')); 
+    texPlay = Screen('MakeTexture', win, Play);
+    Pause=imread(fullfile('Stimfiles', 'Pause.png')); 
+    texPause = Screen('MakeTexture', win, Pause);
+    
 %% Coordinates
-    % Center location
-    [xc, yc] = RectCenterd(winRect); % Get coordinates of screen center 
-    xOffsetLeft = 400;
-    xOffsetRight = 600;
-    yOffset = 450;
+    % Size of stimuli (depends on file dimensions)
+    sizePlay = 110;
+    sizePause = 108;
+    sizeWin = 117;
+    sizeLose = 83;
     
-%% keyboard parameters
-    KbName('UnifyKeyNames'); % Use same key codes across operating systems for better portability % usa questo
+    [xc, yc] = RectCenterd(winRect);    %get coordinates of screen center
+    xcOffsetLeft = xc+300;              %to position left image
+    xcOffsetRight = xc+600;             %to position right image
+    ycOffset = yc+150;
+
+    %Position play_pause
+    imageRectPlayLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+sizePlay, ycOffset+sizePlay];
+    imageRect1 = [xcOffsetRight, ycOffset, xcOffsetRight+sizePause, ycOffset+sizePause];
     
-%% Load images (supposed to be in the same directory as the script)
+    Screen('DrawTexture', win, texPlay,[],imageRect);
+    Screen('DrawTexture', win, texPause,[],imageRect1);
+    Screen('Flip',win);
 
-Lose=imread(fullfile('Stimfiles', 'Lose.png')); 
-texLose = Screen('MakeTexture', win, Lose);
-Win=imread(fullfile('Stimfiles', 'Win.png')); 
-texWin = Screen('MakeTexture', win, Win);
-Play=imread(fullfile('Stimfiles', 'Play.png')); 
-texPlay = Screen('MakeTexture', win, Play);
-Pause=imread(fullfile('Stimfiles', 'Pause.png')); 
-texPause = Screen('MakeTexture', win, Pause);
-
-[imagePlayHeight, imagePlayWidth, colorChannels]= size(Play);
-[imagePauseHeight, imagePauseWidth, colorChannels]= size(Pause);
-[imageLoseHeight, imageLoseWidth, colorChannels]= size(Lose);
-[imageWinHeight, imageWinWidth, colorChannels]= size(Win);
-
-imagePlayPauseRectRight = [xOffsetLeft, yOffset, xOffsetLeft+imagePlayWidth, yOffset+imagePlayHeight];
-imagePlayPauseRectLeft = [xOffsetLeft, yOffset, xOffsetLeft+imagePlayWidth, yOffset+imagePlayHeight];
-Screen('DrawTexture', win, texPlay,[],imagePlayPauseRectRight);
-Screen('Flip',win);
+    %Position pause_play
 
