@@ -14,8 +14,9 @@ backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', Da
 
 nblocks=4;
 nresp=2;
-numTrials=[2,4,6,8];                                                %possible nr of trials per block
-thisBlockTrials=numTrials(randi(numel(numTrials)));                 %randomly determines num trials per block
+nTrials=10
+%numTrials=[2,4,6,8];                                                %possible nr of trials per block
+%thisBlockTrials=numTrials(randi(numel(numTrials)));                 %randomly determines num trials per block
 condOrder = randsrc(1,nblocks,[1 0]);                               %vector of 0s and 1s randomly distributed in equal number
 
 
@@ -31,14 +32,12 @@ for x=1:nblocks
     P_OA = conTableShuffled(x,:);           %Define P_OA = {play, do not play} for this block
     trials_P_OA = zeros(10,2);              %Generate pseudo-random sequence of outcomes for Action 1 = trials_P_OA1
     
-    if condOrder(:,x)==0
-       disp('This is a play_pause block')
-    elseif condOrder(:,x)==1
-       disp('This is a pause_play block')
-    end
+    %DrawFormattedText(win, ['Stai per testare il giocatore numero 1!'],'center','center',white);    
+    %Screen('Flip',win);
+    %WaitSecs(3);
     
     for j=1:nresp                           %Loop over actions
-        for i=1:thisBlockTrials              %Loop over trials
+        for i=1:nTrials                   %Loop over trials
             if i < (P_OA(:,j)+1)            %Assign correct and incorrect outcomes (basically overwrite trials_P_OA)
             trials_P_OA(i,j) = 1;
             else
@@ -51,28 +50,45 @@ for x=1:nblocks
         n_A1 = 1;
         n_A2 = 1;
 
-        for k=1:thisBlockTrials
+        for k=1:nTrials
             trialnb = trialnb + 1
             blocknb(trialnb,1) = x
             thistrial(trialnb,1) = k
+            
+            %if condOrder(:,x)==0
+             %Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
+             %Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
+             %Screen('Flip',win);
+            %elseif condOrder(:,x)==1
+             %Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
+             %Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
+             %Screen('Flip',win);
+            %end
+            
+            %RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
+            %[secs, keyCode, deltaSecs] = KbWait([],2); %wait for 1 key press
+           
             n = input('Play? ');
-            if n == 1                                  %Set outcomes according to A-O contingencies
-                if trials_P_OA(n_A1,n) == 1
-                disp('WIN');
-                else
-                disp('LOST')
+            
+               %Set outcomes according to A-O contingencies
+                if n == 1                                  
+                    if trials_P_OA(n_A1,n) == 1
+                    disp('WIN');
+                    else
+                    disp('LOST')
+                    end;
+                    n_A1 = n_A1 + 1
+                elseif n == 2 
+                    if trials_P_OA(n_A2,n) == 1
+                    disp('WIN');
+                    else
+                    disp('LOST')
+                    end;
+                    n_A2 = n_A2 + 1
                 end;
-                n_A1 = n_A1 + 1
-            elseif n == 2 
-                if trials_P_OA(n_A2,n) == 1
-                disp('WIN');
-                else
-                disp('LOST')
-                end;
-                n_A2 = n_A2 + 1
-            end;
-            k = k + 1;
-        end
+                k = k + 1;
+                
+            end
 end
 
 % ========= SAVE DATA ========= %

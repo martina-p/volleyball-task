@@ -23,7 +23,7 @@
     winRect = [0,0,800,600];
     HideCursor;
 
-%% Load images
+%% Load stimuli
 
     Lose=imread(fullfile('Stimfiles', 'Lose.png')); 
     texLose = Screen('MakeTexture', win, Lose);
@@ -34,7 +34,7 @@
     Pause=imread(fullfile('Stimfiles', 'Pause.png')); 
     texPause = Screen('MakeTexture', win, Pause);
     
-%% Coordinates
+%% Stimuli positions
     % Size of stimuli (depends on file dimensions)
     sizePlay = 110;
     sizePause = 108;
@@ -50,14 +50,7 @@
     imageRectPlayLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+sizePlay, ycOffset+sizePlay];
     imageRectPauseRight = [xcOffsetRight, ycOffset, xcOffsetRight+sizePause, ycOffset+sizePause];
     
-    %Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
-    %Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
-    %Screen('Flip',win);
-
     %Screen when Pause is on the left and Play is on the right
     imageRectPlayRight = [xcOffsetRight, ycOffset, xcOffsetRight+sizePlay, ycOffset+sizePlay];
     imageRectPauseLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+sizePause, ycOffset+sizePause];
 
-    Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
-    Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
-    Screen('Flip',win);
