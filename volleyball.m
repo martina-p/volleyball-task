@@ -22,8 +22,8 @@ conTableShuffled = contTable(randperm(10),:);                       %Shuffle con
 
 % ========= LOOP ========= %
 % Start PTB-related stuff
-psychExpInit; 
-trialnb = 0;
+    psychExpInit; 
+    trialnb = 0;
 
 for x=1:nblocks
     P_OA = conTableShuffled(x,:);                                   %Define P_OA = {play, do not play} for this block
@@ -43,51 +43,67 @@ for x=1:nblocks
     end;
     
     trials_P_OA_shuffled = trials_P_OA(randperm(10),:);             %Shuffle trials_P_OA
-    
-        k = 1;
-        noresp = 0;
+    k = 1;
 
         for k=1:nTrials
             trialnb = trialnb + 1
             blocknb(trialnb,1) = x
             thistrial(trialnb,1) = k
+            RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
             
-            if condOrder(:,x)==0
+            %Present stimuli at the beginning of the trial
+            onsetTime=GetSecs; %get the time when stimuli are first presented           
+            if condOrder(:,x)==0   
              Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
              Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
-             Screen('Flip',win);
             elseif condOrder(:,x)==1
              Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
              Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
-             Screen('Flip',win);
             end
-           
-            RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
+            Screen('Flip',win);          
+            
             %Check response
             [secs, keyCode, deltaSecs] = KbWait([],2); %wait for 1 key press
+            %Get response time
+            
+            RT=GetSecs-onsetTime;
+            
+            
             if keyCode(:,37) == 1 %leftArrow
                 n = 1;
             elseif keyCode(:,39) == 1 %rightArrow
                 n = 2;
             end
-            
-                %Set outcomes according to A-O contingencies
+        
+                %Set outcomes according to A-O contingencies    
                 if trials_P_OA_shuffled(trialnb,n) == 1
-                   outcome = 11    
+                    if condOrder(:,x)==0   
+                        Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
+                        Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
+                     elseif condOrder(:,x)==1
+                        Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
+                        Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
+                    end
+                   outcome = 11;    
                    Screen('DrawTexture', win, texWin,[]);
-                   Screen('Flip',win);
-                   WaitSecs(.5);
                 else
-                   outcome = 12    
+                    if condOrder(:,x)==0   
+                        Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
+                        Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
+                     elseif condOrder(:,x)==1
+                        Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
+                        Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
+                    end                    
+                    outcome = 12;
                    Screen('DrawTexture', win, texLose,[]);    
-                   Screen('Flip',win);
-                   WaitSecs(.5);
                 end;
+                Screen('Flip',win);
+                WaitSecs(.5);
                 k = k + 1;
                 choices(trialnb,1) = n;
                 outcomes(trialnb,1) = outcome;
-            end
-            
+                RTs(trialnb,1) = RT;  
+        end   
 end
 
 % ========= SAVE DATA & CLOSE ========= %
