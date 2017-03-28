@@ -36,7 +36,8 @@ for x=1:nblocks
             thistrial(trialnb,1) = k
             
             RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
-                  
+            
+            %First screen
             if condOrder(:,x)==0   
                 Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
                 Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
@@ -46,17 +47,35 @@ for x=1:nblocks
             end
             Screen('Flip',win);
             
-            [secs, keyCode, deltaSecs] = KbWait([],2); %wait for 1 key press
-                   
-            if keyCode(:,37) == 1 %leftArrow
-               n = 1;
-            elseif keyCode(:,39) == 1 %rightArrow
-               n = 2;
+            keyIsDown=0;
+            tEnd=GetSecs+5;
+            while ~keyIsDown && GetSecs<tEnd
+                [keyIsDown, pressedSecs, keyCode] = KbCheck(-1);
+                if GetSecs>tEnd
+                    if condOrder(:,x)==0   
+                        Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
+                        Screen('DrawTexture', win, texPause,[],imageRectPauseRight);
+                    elseif condOrder(:,x)==1
+                        Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
+                        Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
+                    end                    
+                    DrawFormattedText(win, ['?'],'center','center',red);    
+                    Screen('Flip',win);
+                    WaitSecs(.5);
+                    Screen('CloseAll');
+                    break
+                end
             end
             
+               if keyCode(:,37) == 1 %leftArrow
+                    n = 1;
+               elseif keyCode(:,39) == 1 %rightArrow
+                    n = 2;
+               end
+            
             %Set outcomes
-            condizione = 1;
-            outcome = (rand > P_OA(condizione,n)/10);
+                condizione = 1;
+                outcome = (rand > P_OA(condizione,n)/10);
             
             if outcome == 1
                if condOrder(:,x)==0   
@@ -78,14 +97,13 @@ for x=1:nblocks
                     Screen('DrawTexture', win, texLose,[],destinationRectLose);
             end      
                 Screen('Flip',win);
-                WaitSecs(.5);
-             
+                WaitSecs(.5);   
             k = k + 1;
             choices(trialnb,1) = n;
             outcomes(trialnb,1) = outcome;
+            end  
         end
-
-end        
+       
 
 % ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
