@@ -35,7 +35,8 @@
     Pause=imread(fullfile('Stimfiles', 'Pause.png')); 
     texPause = Screen('MakeTexture', win, Pause);
     
-%% Stimuli size & positions 
+%% Stimuli positions
+    % Size of stimuli 
     %Play
     [imageHeight, imageWidth, colorChannels] = size(Play);
     imagePlay = [0 0 imageWidth imageHeight];
@@ -46,18 +47,20 @@
     imagePause = [0 0 imageWidth imageHeight];
     imagePause = [0 0 imageWidth./10 imageHeight./10];
     
+    %[xc, yc] = RectCenterd(winRect);    %get coordinates of screen center
     xc = winRect(3)/2;
     yc = winRect(4)/2;
-    xcOffsetLeft = xc-250;              %to position left image
-    xcOffsetRight = xc+150;             %to position right image
+    xcOffsetLeft = xc+300;              %to position left image
+    xcOffsetRight = xc+600;             %to position right image
+    ycOffset = yc+150;
 
     %Screen when Play is on the left and Pause is on the right
-    imageRectPlayLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePlay(:,3)) yc+(imagePlay(:,4))];
-    imageRectPauseRight = [xcOffsetRight, yc, xcOffsetRight+(imagePause(:,3)), yc+(imagePause(:,3))];
+    imageRectPlayLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+(imagePlay(:,3)) ycOffset+(imagePlay(:,4))];
+    imageRectPauseRight = [xcOffsetRight, ycOffset, xcOffsetRight+(imagePause(:,3)), ycOffset+(imagePause(:,3))];
     
     %Screen when Pause is on the left and Play is on the right
-    imageRectPlayRight = [xcOffsetRight, yc, xcOffsetRight+(imagePlay(:,3)), yc+(imagePlay(:,3))];
-    imageRectPauseLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePause(:,3)), yc+(imagePause(:,3))];
+    imageRectPlayRight = [xcOffsetRight, ycOffset, xcOffsetRight+(size(Play)./10), ycOffset+(size(Play)./10)];
+    imageRectPauseLeft = [xcOffsetLeft, ycOffset, xcOffsetLeft+(imagePause(:,3)), ycOffset+(size(Pause)./10)];
 
     %Win Center
     [imageHeight, imageWidth, colorChannels] = size(Win); %get size of image
@@ -72,3 +75,5 @@
     destinationRectLose = CenterRect(imageLose,winRect);
     imageLoseRect = imageLose./10;
     destinationRectLose = CenterRect(imageLoseRect,winRect);
+    
+    %Lose Center
