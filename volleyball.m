@@ -19,6 +19,7 @@ contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency t
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
 condOrder = randsrc(1,nblocks,[1 0]);                             %vector of 0s and 1s randomly distributed in equal number, for play_pause or pause_play display
 players = randperm(nblocks);                                      %create as many unique "player numbers" as there are blocks
+thisblock = zeros((ntrials*nblocks),1);                           %preallocate block nr storage
 
 % ========= LOOPS ========= %
 % Start PTB
@@ -31,6 +32,7 @@ for x = 1:nblocks
     blocknb = blocknb + 1;
     P_OA = conTableShuffled(x,:); %set P_OA = {play, do not play} for this block
     lateTrials = zeros(ntrials,1); %preallocate late trials occurrences
+    
     thisblockplayer = players(:,x); %chose this block's "player"
     
     %First screen of the block, indtroduce the "player"
@@ -45,8 +47,8 @@ for x = 1:nblocks
  
         while k <= ntrials %use while instead of for loop to accomodate late trials
             trialnb = trialnb + 1;
-            blocknb(trialnb,1) = x;
-            thistrial(trialnb,1) = k;
+            thistrial(trialnb,1) = k; %store number of trial
+            thisblock(trialnb,1) = blocknb
             RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
             
             %Present stimuli
@@ -128,14 +130,14 @@ for x = 1:nblocks
             k=k+1;               
         end
         
-% ========= END OF BLOCK QUESTIONS ========= %
+% ========= END-OF-BLOCK QUESTIONS ========= %
 % ...
     x = x+1;
 end
        
 % ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, blocknb, thistrial, choices, reactionTimes, outcomes]; 
+data = [subject, thisblock, thistrial, choices, reactionTimes, outcomes]; 
 save(resultname, 'data');
 
 Screen('CloseAll');

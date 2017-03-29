@@ -31,6 +31,7 @@ for x = 1:nblocks
     blocknb = blocknb + 1;
     P_OA = conTableShuffled(x,:); %set P_OA = {play, do not play} for this block
     lateTrials = zeros(ntrials,1); %preallocate late trials occurrences
+    thisblock = zeros((ntrials*nblocks),1); %preallocate block nr storage
     thisblockplayer = players(:,x); %chose this block's "player"
     
     %First screen of the block, indtroduce the "player"
@@ -45,7 +46,7 @@ for x = 1:nblocks
  
         while k <= ntrials %use while instead of for loop to accomodate late trials
             trialnb = trialnb + 1;
-            blocknb(trialnb,1) = x;
+            thisblock((trialnb,1) = blocknb
             thistrial(trialnb,1) = k;
             RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
             
@@ -125,17 +126,20 @@ for x = 1:nblocks
             reactionTimes(trialnb,1) = reactionTime;
             choices(trialnb,1) = n;
             outcomes(trialnb,1) = outcome;
+            %thisblock(trialnb,1) = blocknb;
+            
             k=k+1;               
         end
         
-% ========= END OF BLOCK QUESTIONS ========= %
+% ========= END-OF-BLOCK QUESTIONS ========= %
 % ...
+    %blocknb(1:trialnb,1) = x;
     x = x+1;
 end
        
 % ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, blocknb, thistrial, choices, reactionTimes, outcomes]; 
+data = [subject, thisblock, thistrial, choices, reactionTimes, outcomes]; 
 save(resultname, 'data');
 
 Screen('CloseAll');
