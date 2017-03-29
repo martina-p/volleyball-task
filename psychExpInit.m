@@ -39,36 +39,44 @@
     %Play
     [imageHeight, imageWidth, colorChannels] = size(Play);
     imagePlay = [0 0 imageWidth imageHeight];
-    imagePlay = [0 0 imageWidth./10 imageHeight./10];
+    imagePlay = [0 0 imageWidth./15 imageHeight./15];
     
     %Pause
     [imageHeight, imageWidth, colorChannels] = size(Pause);
-    imagePause = [0 0 imageWidth imageHeight];
-    imagePause = [0 0 imageWidth./10 imageHeight./10];
+    imagePause = [0 0 imageWidth./15 imageHeight./15];
     
-    xc = winRect(3)/2;
-    yc = winRect(4)/2;
-    xcOffsetLeft = xc-250;              %to position left image
-    xcOffsetRight = xc+150;             %to position right image
+    %Win
+    [imageHeight, imageWidth, colorChannels] = size(Win);
+    imageWin = [0 0 imageWidth./10 imageHeight./10];
+    
+    %Lose
+    [imageHeight, imageWidth, colorChannels] = size(Win);
+    imageLose = [0 0 imageWidth imageHeight];
+    imageLose = [0 0 imageWidth./10 imageHeight./10];
+    
+    %xc = winRect(3)/2;
+    %yc = winRect(4)/2;
+    [xc, yc] = RectCenterd(winRect);    %get center coordinates
+    xcOffsetLeft = xc-150;              %position left image
+    xcOffsetRight = xc+150;             %position right image
 
-    %Screen when Play is on the left and Pause is on the right
+    %Play on the left, Pause on the right
     imageRectPlayLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePlay(:,3)) yc+(imagePlay(:,4))];
     imageRectPauseRight = [xcOffsetRight, yc, xcOffsetRight+(imagePause(:,3)), yc+(imagePause(:,3))];
     
-    %Screen when Pause is on the left and Play is on the right
+    %Pause on the left, Play on the right
     imageRectPlayRight = [xcOffsetRight, yc, xcOffsetRight+(imagePlay(:,3)), yc+(imagePlay(:,3))];
     imageRectPauseLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePause(:,3)), yc+(imagePause(:,3))];
 
-    %Win Center
-    [imageHeight, imageWidth, colorChannels] = size(Win); %get size of image
-    imageWin = [0 0 imageWidth imageHeight]; %define image rect
-    destinationRectWin = CenterRect(imageWin,winRect); %center Win
-    imageWinRect = imageWin./10;
-    destinationRectWin = CenterRect(imageWinRect,winRect);
+    %Win Center position
+    imageWin = [xc, yc, xc+imageWin(:,3), yc+imageWin(:,4)]; 
     
-    %Lose Center
-    [imageHeight, imageWidht, colorChannels] = size(Lose);
-    imageLose = [0 0 imageWidth imageHeight];
-    destinationRectLose = CenterRect(imageLose,winRect);
-    imageLoseRect = imageLose./10;
-    destinationRectLose = CenterRect(imageLoseRect,winRect);
+    %Lose Center position
+    imageLose = [xc, yc, xc+imageLose(:,3), yc+imageLose(:,4)];
+    
+    %Fixation cross
+    crossLength=10;
+    crossColor=white;
+    crossWidth=3;
+    crossLines=[-crossLength, 0; crossLength, 0; 0, -crossLength; 0, crossLength];
+    crossLines=crossLines';
