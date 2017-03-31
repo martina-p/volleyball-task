@@ -3,7 +3,7 @@
     % Screen Preferences
     Screen('Preference', 'VBLTimestampingMode', 3);%Add this to avoid timestamping problems
     Screen('Preference', 'DefaultFontName', 'Geneva');
-    Screen('Preference', 'DefaultFontSize', 30); %fontsize
+    Screen('Preference', 'DefaultFontSize', 20); %fontsize
     Screen('Preference', 'DefaultFontStyle', 0); % 0=normal,1=bold,2=italic,4=underline,8=outline,32=condense,64=extend,1+2=bold and italic.
     Screen('Preference', 'DefaultTextYPositionIsBaseline', 1); % align text on a line 
     
