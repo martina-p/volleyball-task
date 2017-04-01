@@ -4,10 +4,15 @@ clc;
 % ========= SET LOGFILES ========= 
 subjectID = input('Participant number: ');
 DateTime = datestr(now,'yyyymmdd-HHMM');
+
 if ~exist('Logfiles', 'dir')
     mkdir('Logfiles');
 end
-resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));
+
+%There will be two data files with different names: 
+resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));                          %this one is for choice data over trials
+resultnameQuestions = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'questions_', DateTime, '.mat'));        %this one is for end-of-block questions
+
 backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat')); %save under name composed by number of subject and date of session
 
 % ========= PARAMETERS & DATA PREALLOCATION ========= %
@@ -141,33 +146,35 @@ for x = 1:nblocks
         DrawFormattedText(win,'«-100»  : questo giocatore fa sempre perdere la squadra',150,450,white);
         DrawFormattedText(win,'«0» : questo giocatore non ha alcun impatto sulla performance della squadra',150,500,white);
         DrawFormattedText(win,'«100» : questo giocatore fa sempre vincere la squadra',150,550,white);
-        respQ1=Ask(win,'Inserisci adesso il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20)
+        respQ1=Ask(win,'Inserisci adesso il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
         Screen('Flip',win);
         
         DrawFormattedText(win,'Clicca ancora su INVIO per confermare il valore inserito e passare alla schermata successiva.',150,300,white);
         DrawFormattedText(win,'Se invece vuoi modificarlo, scrivi adesso il nuovo valore, poi premi INVIO per continuare.',150,350,white);
-        respQ12=Ask(win,'Nuovo valore:   ',white,black,'GetChar',[800 100 1000 1000],'center',20)
+        respQ12=Ask(win,'Nuovo valore:   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
         DrawFormattedText(win,'Grazie, il punteggio è stato registrato correttamente.',150,300,white);
         DrawFormattedText(win,'Ora per favore rispondi a questa domanda scrivendo SI o NO usando la tastiera:',150,350,white);
-        respQ3=Ask(win,'Faresti giocare questo giocatore nel prossimo campionato?   ',white,black,'GetChar',[800 100 1000 1000],'center',20)
+        respQ3=Ask(win,'Faresti giocare questo giocatore nel prossimo campionato?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
         DrawFormattedText(win,'Ne sei sicuro?',150,300,white);
-        respQ4=Ask(win,'0 = per niente, 100 = completamente:   ',white,black,'GetChar',[800 100 1000 1000],'center',20)
+        respQ4=Ask(win,'0 = per niente, 100 = completamente:   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
         %Store responses after each block
-        respEndOfBlock{blocknb,1}=respQ1
-        respEndOfBlock{blocknb,2}=respQ12
-        respEndOfBlock{blocknb,3}=respQ3
-        respEndOfBlock{blocknb,4}=respQ4
+        respEndOfBlock{blocknb,1}=respQ1;
+        respEndOfBlock{blocknb,2}=respQ12;
+        respEndOfBlock{blocknb,3}=respQ3;
+        respEndOfBlock{blocknb,4}=respQ4;
 end
        
 % ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, thisblock, condition, thistrial, choices, outcomes, reactionTimes]; 
+data = [subject, thisblock, condition, thistrial, choices, outcomes, reactionTimes];
+dataQuestions = (respEndOfBlock);
+save(resultnameQuestions, 'dataQuestions');
 save(resultname, 'data');
 
 Screen('CloseAll');
