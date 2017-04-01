@@ -10,28 +10,33 @@ end
 resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));
 backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat')); %save under name composed by number of subject and date of session
 
-% ========= PARAMETERS ========= %
-nblocks = 2;
-ntrials = 10;
+% ========= PARAMETERS & DATA PREALLOCATION ========= %
+nblocks = 2;                                                        %modify with desired number of blocks
+ntrials = 10;                                                       %modify with desired number of trials per block
 %numTrials = [8,16,36,40];                                          %possible nr of trials per block
 %thisBlockTrials = numTrials(randi(numel(numTrials)));              %randomly determines num trials per block
+
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
-condOrder = randsrc(1,nblocks,[1 0]);                             %vector of 0s and 1s randomly distributed in equal number, for play_pause or pause_play display
+condOrder = randsrc(1,nblocks,[1 0]);                             %vector of 0s and 1s randomly distributed in equal number, for play_pause or pause_play displays
+
 players = randperm(nblocks);                                      %create as many unique "player numbers" as there are blocks
 thisblock = zeros((ntrials*nblocks),1);                           %preallocate block nr storage
+respEndOfBlock = {nblocks,4};                                     %prealocate responses to end-of-block questions
 
 % ========= LOOPS ========= %
 % Start PTB
-    psychExpInit; 
-    blocknb = 0;
-    trialnb = 0;
+psychExpInit;
+
+%Initial values for the loops
+blocknb = 0;
+trialnb = 0;
   
 for x = 1:nblocks
     k=1;
     blocknb = blocknb + 1;
-    P_OA = conTableShuffled(x,:); %set P_OA = {play, do not play} for this block
-    lateTrials = zeros(ntrials,1); %preallocate late trials occurrences
+    P_OA = conTableShuffled(x,:);   %set P_OA = {play, do not play} for this block
+    lateTrials = zeros(ntrials,1);  %preallocate late trials occurrences
     
     thisblockplayer = players(:,x); %chose this block's "player"
     
@@ -98,7 +103,7 @@ for x = 1:nblocks
             condizione = 1;
             outcome = (rand > P_OA(condizione,n)/10);
             
-            %Show win /lose cues
+            %Show win/lose cues
             if outcome == 1
                if condOrder(:,x)==0   
                    Screen('DrawTexture', win, texPlay,[],imageRectPlayLeft);
@@ -137,7 +142,6 @@ for x = 1:nblocks
         DrawFormattedText(win,'«-100»  : questo giocatore fa sempre perdere la squadra',150,450,white);
         DrawFormattedText(win,'«0» : questo giocatore non ha alcun impatto sulla performance della squadra',150,500,white);
         DrawFormattedText(win,'«100» : questo giocatore fa sempre vincere la squadra',150,550,white);
-        
         respQ1=Ask(win,'Inserisci adesso il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20)
         Screen('Flip',win);
         
@@ -152,8 +156,14 @@ for x = 1:nblocks
         Screen('Flip',win);
         
         DrawFormattedText(win,'Ne sei sicuro?',150,300,white);
-        respQ3=Ask(win,'0 = per niente, 100 = completamente:   ',white,black,'GetChar',[800 100 1000 1000],'center',20)
+        respQ4=Ask(win,'0 = per niente, 100 = completamente:   ',white,black,'GetChar',[800 100 1000 1000],'center',20)
         Screen('Flip',win);
+        
+        %Store responses after each block
+        respEndOfBlock{blocknb,1}=respQ1
+        respEndOfBlock{blocknb,2}=respQ12
+        respEndOfBlock{blocknb,3}=respQ3
+        respEndOfBlock{blocknb,4}=respQ4
 end
        
 % ========= SAVE DATA & CLOSE ========= %
