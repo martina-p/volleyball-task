@@ -11,26 +11,24 @@ resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime,
 backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat')); %save under name composed by number of subject and date of session
 
 % ========= PARAMETERS & DATA PREALLOCATION ========= %
-nblocks = 2;                                                        %modify with desired number of blocks
+nblocks = 3;                                                        %modify with desired number of blocks
 ntrials = 10;                                                       %modify with desired number of trials per block
 %numTrials = [8,16,36,40];                                          %possible nr of trials per block
 %thisBlockTrials = numTrials(randi(numel(numTrials)));              %randomly determines num trials per block
 
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
-condOrder = randsrc(1,nblocks,[1 0]);                             %vector of 0s and 1s randomly distributed in equal number, for play_pause or pause_play displays
+condOrder = randsrc(1,nblocks,[1 0]);                             %vector of 0s and 1s randomly distributed in equal number, for play_pause or pause_play conditions
 
 players = randperm(nblocks);                                      %create as many unique "player numbers" as there are blocks
-thisblock = zeros((ntrials*nblocks),1);                           %preallocate block nr storage
+thisblock = zeros((ntrials*nblocks),1);                           %preallocate block nr storage to be recorded for each trial
+condition = zeros((ntrials*nblocks),1);                           %preallocate condition (play_pause or pause_play) to be recorded for each trial
 respEndOfBlock = {nblocks,4};                                     %prealocate responses to end-of-block questions
 
 % ========= LOOPS ========= %
-% Start PTB
-psychExpInit;
-
-%Initial values for the loops
-blocknb = 0;
-trialnb = 0;
+psychExpInit; %start PTB
+blocknb = 0; %initial block value
+trialnb = 0; %initial trial value
   
 for x = 1:nblocks
     k=1;
@@ -53,7 +51,8 @@ for x = 1:nblocks
         while k <= ntrials %use while instead of for loop to accomodate late trials
             trialnb = trialnb + 1;
             thistrial(trialnb,1) = k; %store number of trial
-            thisblock(trialnb,1) = blocknb
+            thisblock(trialnb,1) = blocknb; %store block nr
+            condition(trialnb,1) = condOrder(:,x); %store condition type (play_pause or pause_play)
             RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
             
             %Present stimuli
@@ -168,7 +167,7 @@ end
        
 % ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, thisblock, thistrial, choices, reactionTimes, outcomes]; 
+data = [subject, thisblock, condition, thistrial, choices, outcomes, reactionTimes]; 
 save(resultname, 'data');
 
 Screen('CloseAll');
