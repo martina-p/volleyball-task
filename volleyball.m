@@ -23,7 +23,7 @@ ntrials = 10;                                                       %modify with
 
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
-condOrder = randsrc(1,nblocks,[1 0]);                             %vector of 0s and 1s randomly distributed in equal number, for play_pause or pause_play conditions
+condOrder = randi([0,1],1,10);                                    %vector of 0s and 1s for play_pause or pause_play conditions
 
 players = randperm(nblocks);                                      %create as many unique "player numbers" as there are blocks
 thisblock = zeros((ntrials*nblocks),1);                           %preallocate block nr storage to be recorded for each trial
@@ -50,13 +50,17 @@ while exitInstructions == false                 %loop instructions until space k
     if keyCode(:,32) == 1 %space
         exitInstructions = true;
     elseif keyCode(:,37) == 1 %leftArrow
-           pos = pos-1;
+           pos = pos-1
     elseif keyCode(:,39) == 1 %rightArrow
-           pos = pos+1;
+           pos = pos+1       
     end
     
+    if pos == 8
+       break
+    end   
+    
     %show instructions slide according to position
-    thisSlide=imread(fullfile('Stimfiles', strcat('Slide',num2str(pos),'.png'))); 
+    thisSlide=imread(fullfile('Stimfiles', strcat('Slide',num2str(pos),'.bmp'))); 
     texslide = Screen('MakeTexture', win, thisSlide);
     Screen('DrawTexture', win, texslide);
     Screen('Flip',win);

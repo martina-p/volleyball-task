@@ -26,7 +26,7 @@
     
 %% Load instruction slides
     
-    slide1=imread(fullfile('Stimfiles', 'Slide1.png')); 
+    slide1=imread(fullfile('Stimfiles', 'Slide1.bmp')); 
     texslide1 = Screen('MakeTexture', win, slide1);
     
 %% Load stimuli
