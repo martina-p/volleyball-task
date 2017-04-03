@@ -23,7 +23,12 @@
     screenNumber=max(screens); % Main screen
     [win,winRect] = Screen('OpenWindow',screenNumber,black);
     HideCursor;
-
+    
+%% Load instruction slides
+    
+    slide1=imread(fullfile('Stimfiles', 'Slide1.png')); 
+    texslide1 = Screen('MakeTexture', win, slide1);
+    
 %% Load stimuli
 
     Lose=imread(fullfile('Stimfiles', 'Lose.png')); 

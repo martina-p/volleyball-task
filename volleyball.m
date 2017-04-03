@@ -29,9 +29,42 @@ players = randperm(nblocks);                                      %create as man
 thisblock = zeros((ntrials*nblocks),1);                           %preallocate block nr storage to be recorded for each trial
 condition = zeros((ntrials*nblocks),1);                           %preallocate condition (play_pause or pause_play) to be recorded for each trial
 respEndOfBlock = {nblocks,4};                                     %prealocate responses to end-of-block questions
+M = {1, 2, 3, 4, 5, 6};                                           %positions for instruction screens
+
+% ========= DISPLAY INSTRUCTIONS ========= %
+
+psychExpInit;                                %start PTB
+
+RestrictKeysForKbCheck([32,37,39]);          %restrict key presses to space, right and left arrows
+exitInstructions = false;                    %cue which determines whether to exit the instructions
+pos = 1;                                     %initial position to go back and forth between the slides
+
+Screen('DrawTexture', win, texslide1);       %show first slide      
+Screen('Flip',win);                             
+
+while exitInstructions == false                 %loop instructions until space key is pressed
+    [secs, keyCode, deltaSecs] = KbWait([],2);  %waits for key press
+    
+    %depending on button press, either move pos or exit instructions
+    
+    if keyCode(:,32) == 1 %space
+        exitInstructions = true;
+    elseif keyCode(:,37) == 1 %leftArrow
+           pos = pos-1;
+    elseif keyCode(:,39) == 1 %rightArrow
+           pos = pos+1;
+    end
+    
+    %show instructions slide according to position
+    thisSlide=imread(fullfile('Stimfiles', strcat('Slide',num2str(pos),'.png'))); 
+    texslide = Screen('MakeTexture', win, thisSlide);
+    Screen('DrawTexture', win, texslide);
+    Screen('Flip',win);
+    continue
+    
+end
 
 % ========= LOOPS ========= %
-psychExpInit; %start PTB
 blocknb = 0; %initial block value
 trialnb = 0; %initial trial value
   
@@ -46,12 +79,12 @@ for x = 1:nblocks
     %First screen of the block, indtroduce the "player"
     DrawFormattedText(win,['Stai per testare il giocatore numero  ' num2str(thisblockplayer)],'center','center',white);
     Screen('Flip',win);
-    WaitSecs(.5);
+    WaitSecs(3);
     
     %Fixation cross
     Screen('DrawLines',win,crossLines,crossWidth,crossColor,[xc,yc]);
     Screen('Flip',win);
-    WaitSecs(.5);
+    WaitSecs(3);
  
         while k <= ntrials %use while instead of for loop to accomodate late trials
             trialnb = trialnb + 1;
