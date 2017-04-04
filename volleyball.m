@@ -125,7 +125,7 @@ for x = 1:nblocks
                         Screen('DrawTexture', win, texPlay,[],imageRectPlayRight);
                         Screen('DrawTexture', win, texPause,[],imageRectPauseLeft);
                     end                    
-                 DrawFormattedText(win,['?'],xc,yc,red);    
+                 DrawFormattedText(win,['?'],xc+30,yc+30,red);    
                  Screen('Flip',win);
                  WaitSecs(.5);
                  lateTrials(trialnb,1) = 1;
