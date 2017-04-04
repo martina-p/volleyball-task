@@ -68,7 +68,7 @@ while exitInstructions == false                 %loop instructions until space k
     
 end
 
-% ========= LOOPS ========= %
+%% ========= LOOPS ========= %
 blocknb = 0; %initial block value
 trialnb = 0; %initial trial value
   
@@ -165,7 +165,7 @@ for x = 1:nblocks
                     Screen('DrawTexture', win, texLose,[],imageLose);
             end      
                 Screen('Flip',win);
-                WaitSecs(.5);   
+                WaitSecs(1.5);   
             
             nLateTrials = numel(find(lateTrials(:,1)==1)); %count how many late trials there have been
             
