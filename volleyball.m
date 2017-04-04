@@ -45,8 +45,7 @@ Screen('Flip',win);
 while exitInstructions == false                 %loop instructions until space key is pressed
     [secs, keyCode, deltaSecs] = KbWait([],2);  %waits for key press
     
-    %depending on button press, either move pos or exit instructions
-    
+    %depending on button press, either move pos or exit instructions  
     if keyCode(:,32) == 1 %space
         exitInstructions = true;
     elseif keyCode(:,37) == 1 %leftArrow
@@ -55,6 +54,12 @@ while exitInstructions == false                 %loop instructions until space k
            pos = pos+1       
     end
     
+    %to prevent errors if people press <- at the beginning  or -> at the end
+    if pos <= 0
+        pos = 2;
+       continue
+    end  
+     
     if pos == 8
        break
     end   
@@ -177,7 +182,7 @@ for x = 1:nblocks
         end
         
 % ========= END-OF-BLOCK QUESTIONS ========= %
-        %prova
+        
         DrawFormattedText(win,'Giudica l impatto che questo giocatore ha avuto sulla squadra con un valore da -100 a +100.',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
         DrawFormattedText(win,'«-100»  : questo giocatore fa sempre perdere la squadra',150,450,white);
