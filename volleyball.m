@@ -177,12 +177,12 @@ for x = 1:nblocks
         end
         
 % ========= END-OF-BLOCK QUESTIONS ========= %
-
+        %prova
         DrawFormattedText(win,'Giudica l impatto che questo giocatore ha avuto sulla squadra con un valore da -100 a +100.',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
-        DrawFormattedText(win,'«-100»  : questo giocatore fa sempre perdere la squadra',150,450,white);
-        DrawFormattedText(win,'«0» : questo giocatore non ha alcun impatto sulla performance della squadra',150,500,white);
-        DrawFormattedText(win,'«100» : questo giocatore fa sempre vincere la squadra',150,550,white);
+        DrawFormattedText(win,'Â«-100Â»  : questo giocatore fa sempre perdere la squadra',150,450,white);
+        DrawFormattedText(win,'Â«0Â» : questo giocatore non ha alcun impatto sulla performance della squadra',150,500,white);
+        DrawFormattedText(win,'Â«100Â» : questo giocatore fa sempre vincere la squadra',150,550,white);
         respQ1=Ask(win,'Inserisci adesso il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
         Screen('Flip',win);
         
@@ -191,7 +191,7 @@ for x = 1:nblocks
         respQ12=Ask(win,'Nuovo valore:   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
-        DrawFormattedText(win,'Grazie, il punteggio è stato registrato correttamente.',150,300,white);
+        DrawFormattedText(win,'Grazie, il punteggio Ã¨ stato registrato correttamente.',150,300,white);
         DrawFormattedText(win,'Ora per favore rispondi a questa domanda scrivendo SI o NO usando la tastiera:',150,350,white);
         respQ3=Ask(win,'Faresti giocare questo giocatore nel prossimo campionato?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
