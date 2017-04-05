@@ -31,7 +31,7 @@ seqAllTrials = seqTrials(newLinearIndex);
 
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
-condOrder = randi([0,1],1,10);                                    %vector of 0s and 1s for play_pause or pause_play conditions
+cond = [0 0 0 0 0 1 1 1 1 1]                                      %for play_pause or pause_play display, changes every block
 
 players = randperm(nruns*nblocks);                                %create as many unique "player numbers" as there are blocks
 thisblock = zeros(300,1);                                         %preallocate block nr storage to be recorded for each trial
@@ -86,6 +86,7 @@ blocknb = 0; %initial block value
 trialnb = 0; %initial trial value
 
 for i = 1:nruns
+    condOrder = cond(randperm(length(cond)));   %vector of 0s and 1s for play_pause or pause_play conditions
 for x = 1:nblocks
     k=1;
     blocknb = blocknb + 1;
