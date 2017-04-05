@@ -188,14 +188,14 @@ for x = 1:nblocks
         DrawFormattedText(win,'   -100 : «questo giocatore fa sempre perdere la squadra»',150,450,white);
         DrawFormattedText(win,'     0  : «questo giocatore non ha alcun impatto sulla performance della squadra»',150,500,white);
         DrawFormattedText(win,'   +100 : «questo giocatore fa sempre vincere la squadra»',150,550,white);
-        respQ1=Ask(win,'Inserisci adesso il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
+        respQ1=Ask(win,'Inserisci il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
         Screen('Flip',win);
         
-        DrawFormattedText(win,'Ora per favore indica con un valore compreso tra 0 a 100 quanto sicuro sei dell impatto del giocatore',150,300,white);
+        DrawFormattedText(win,'Ora per favore indica con un valore compreso tra 0 e 100 quanto sicuro sei dell impatto del giocatore',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
         DrawFormattedText(win,'    0  : «per niente»',150,450,white);
         DrawFormattedText(win,'   100 : «completamente»',150,500,white);
-        respQ2=Ask(win,'Inserisci adesso il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
+        respQ2=Ask(win,'Inserisci il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
         Screen('Flip',win);
         
         respQ3=Ask(win,'Compreresti questo giocatore per il prossimo campionato [si o no]?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
