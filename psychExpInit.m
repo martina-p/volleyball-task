@@ -10,7 +10,8 @@
     % Colors definition
     white = [255 255 255]; 
     black = [0 0 0]; 
-    red= [255 0 0]; 
+    red = [255 0 0];
+    grey = [150 150 150];
     
     % Keyboard parameters
     KbName('UnifyKeyNames');
@@ -35,20 +36,19 @@
     texLose = Screen('MakeTexture', win, Lose);
     Win=imread(fullfile('Stimfiles', 'Win.png')); 
     texWin = Screen('MakeTexture', win, Win);
-    Play=imread(fullfile('Stimfiles', 'Play.png')); 
+    Play=imread(fullfile('Stimfiles', 'with.png')); 
     texPlay = Screen('MakeTexture', win, Play);
-    Pause=imread(fullfile('Stimfiles', 'Pause.png')); 
+    Pause=imread(fullfile('Stimfiles', 'without.png')); 
     texPause = Screen('MakeTexture', win, Pause);
     
 %% Stimuli size & positions 
     %Play
     [imageHeight, imageWidth, colorChannels] = size(Play);
     imagePlay = [0 0 imageWidth imageHeight];
-    imagePlay = [0 0 imageWidth./15 imageHeight./15];
     
     %Pause
     [imageHeight, imageWidth, colorChannels] = size(Pause);
-    imagePause = [0 0 imageWidth./15 imageHeight./15];
+    imagePause = [0 0 imageWidth imageHeight];
     
     %Win
     [imageHeight, imageWidth, colorChannels] = size(Win);
@@ -78,6 +78,7 @@
     
     %Lose Center position
     imageLose = [xc, yc, xc+imageLose(:,3), yc+imageLose(:,4)];
+ 
     
     %Fixation cross
     crossLength=10;

@@ -18,7 +18,6 @@ backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', Da
 %% ========= PARAMETERS & DATA PREALLOCATION ========= %
 nruns = 3;
 nblocks = 10;
-%ntrials = 10;
 
 %make a 10x3 matrix in which each row has 4 occurrences of 40, 3 occurrences of 20 and 3 occurrences of 10; shuffle across rows 
 trialsDistr = [40 40 40 40 20 20 20 10 10 10];                       
@@ -31,7 +30,7 @@ seqAllTrials = seqTrials(newLinearIndex);
 
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
-cond = [0 0 0 0 0 1 1 1 1 1]                                      %for play_pause or pause_play display, changes every block
+cond = [0 0 0 0 0 1 1 1 1 1];                                      %for play_pause or pause_play display, changes every block
 
 players = randperm(nruns*nblocks);                                %create as many unique "player numbers" as there are blocks
 thisblock = zeros(300,1);                                         %preallocate block nr storage to be recorded for each trial
@@ -193,27 +192,27 @@ for x = 1:nblocks
         end
         
 %% ========= END-OF-BLOCK QUESTIONS ========= %
-        
-        DrawFormattedText(win,'Giudica l impatto di questo giocatore con un valore compreso tra -100 e +100.',150,300,white);
+
+        DrawFormattedText(win,'Giudica il valore di questo giocatore con un valore compreso tra -10 e 10.',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
-        DrawFormattedText(win,'   -100 : «questo giocatore fa sempre perdere la squadra»',150,450,white);
-        DrawFormattedText(win,'     0  : «questo giocatore non ha alcun impatto sulla performance della squadra»',150,500,white);
-        DrawFormattedText(win,'   +100 : «questo giocatore fa sempre vincere la squadra»',150,550,white);
+        DrawFormattedText(win,'      -10 : «Il giocatore fa sempre vincere la formazione in cui gioca»',150,450,white);
+        DrawFormattedText(win,'          0 : «Il giocatore non ha alcun impatto nella formazione»',150,500,white);
+        DrawFormattedText(win,'    10 : «Il giocatore fa sempre perdere la formazione in cui gioca»',150,550,white);
         respQ1=Ask(win,'Inserisci il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
         Screen('Flip',win);
         
-        DrawFormattedText(win,'Ora per favore indica con un valore compreso tra 0 e 100 quanto sicuro sei dell impatto del giocatore',150,300,white);
+        DrawFormattedText(win,'Ora indica quanto sicuro del valore assegnato al giocatore con un valore compreso tra 0 e 10.',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
         DrawFormattedText(win,'    0  : «per niente»',150,450,white);
-        DrawFormattedText(win,'   100 : «completamente»',150,500,white);
+        DrawFormattedText(win,'   10 : «completamente»',150,500,white);
         respQ2=Ask(win,'Inserisci il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
         Screen('Flip',win);
         
-        respQ3=Ask(win,'Compreresti questo giocatore per il prossimo campionato [si o no]?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
+        respQ3=Ask(win,'Compreresti questo giocatore per il prossimo campionato (si o no)?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
         DrawFormattedText(win,'Ne sei sicuro?',150,300,white);
-        respQ4=Ask(win,'0 = «per niente», 100 = «completamente»:   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
+        respQ4=Ask(win,'0 : «per niente», 10 : «completamente»',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
         %Store responses after each block
@@ -227,6 +226,7 @@ end
 if i == 3
     DrawFormattedText(win,'FINE DEL GIOCO \n \n Grazie della partecipazione.','center','center',white);
     Screen('Flip',win);
+    WaitSecs(3);
 else
     RestrictKeysForKbCheck([32,37,39]);          %restrict key presses to space, right and left arrows
     DrawFormattedText(win,'PAUSA \n \n Premi SPAZIO quando sei pronto a ricominciare.','center','center',white);
