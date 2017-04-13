@@ -31,7 +31,7 @@ cond = [0 0 0 0 0 1 1 1 1 1];                                     %for play_paus
 players = randperm(30+1);                                         %create as many unique "player numbers" as there are blocks, + 1 for the practice run
 thisblock = zeros(310,1);                                         %preallocate block nr storage to be recorded for each trial
 condition = zeros(310,1);                                         %preallocate condition (play_pause or pause_play) to be recorded for each trial
-respEndOfBlock = {nblocks,4};                                     %prealocate responses to end-of-block questions
+respEndOfBlock = {length(trialsPerBlock),4};                                     %prealocate responses to end-of-block questions
 
 %% ========= INSTRUCTIONS ========= %
 psychExpInit;                                %start PTB
@@ -101,7 +101,7 @@ for x = 1:nblocks
         %First screen of the block, indtroduce the "player"
         DrawFormattedText(win,['Stai per testare il giocatore numero  ' num2str(thisblockplayer)],'center','center',white);
         Screen('Flip',win);
-        WaitSecs(.5);
+        WaitSecs(.2);
     
         %Fixation cross
         Screen('DrawLines',win,crossLines,crossWidth,crossColor,[xc,yc]);
@@ -183,7 +183,7 @@ for x = 1:nblocks
                     Screen('DrawTexture', win, texLose,[],imageLose);
             end      
                 Screen('Flip',win);
-                WaitSecs(.5);   
+                WaitSecs(.2);   
             
             nLateTrials = numel(find(lateTrials(:,1)==1)); %count how many late trials there have been
             
@@ -196,9 +196,7 @@ for x = 1:nblocks
         end
            
 %% ========= END-OF-BLOCK QUESTIONS ========= %
-        if i == 1 %skip the questions if this is the practice run
-            continue
-        else    
+        if i >= 2 %skip questions after practice run  
         DrawFormattedText(win,'Giudica il valore di questo giocatore con un valore compreso tra -10 e 10.',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
         DrawFormattedText(win,'      -10 : «Il giocatore fa sempre vincere la formazione in cui gioca»',150,450,white);
@@ -234,7 +232,7 @@ if i == 1 && x == 1
     DrawFormattedText(win,'FINE DEL TRAINING \n \n Premi SPAZIO quando sei pronto per cominciare con l esperimento vero e proprio. \n \n Se qualcosa non ti è chiaro, alza la mano e uno degli sperimentatori verrà a rispondere alle tue domande.','center','center',white);
     Screen('Flip',win);
     [secs, keyCode, deltaSecs] = KbWait([],2);  %wait forkey press (self-paced start after practice session)
-elseif i == 3
+elseif i == 4
     DrawFormattedText(win,'FINE DEL GIOCO \n \n Grazie della partecipazione.','center','center',white);
     Screen('Flip',win);
     WaitSecs(3);
