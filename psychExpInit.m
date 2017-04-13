@@ -78,7 +78,6 @@
     
     %Lose Center position
     imageLose = [xc, yc, xc+imageLose(:,3), yc+imageLose(:,4)];
- 
     
     %Fixation cross
     crossLength=10;

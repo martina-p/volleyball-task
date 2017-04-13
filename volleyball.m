@@ -1,46 +1,40 @@
-% Clear workspace
+%clear workspace
 clc;
 
 %% ========= SET LOGFILES ========= 
 subjectID = input('Participant number: ');
 DateTime = datestr(now,'yyyymmdd-HHMM');
 
+%create a directory called Logfiles if there isn't one already
 if ~exist('Logfiles', 'dir')
     mkdir('Logfiles');
 end
 
-%There will be two data files with different names: 
-resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));                          %this one is for choice data over trials
-resultnameQuestions = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'questions_', DateTime, '.mat'));        %this one is for end-of-block questions
+%store result names 
+resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));                          %for choices
+resultnameQuestions = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'questions_', DateTime, '.mat'));        %for end-of-block questions
 
-backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat')); %save under name composed by number of subject and date of session
+%% ========= EXPERIMENT STRUCTURE ========= %
+training = 10;                                                     %set number of trials in the training run
+trialsPerBlock = [40 40 40 40 20 20 20 10 10 10];                  %4x40, 3x30, 3x10 
+run1 = trialsPerBlock(randperm(length(trialsPerBlock)));           %shuffle to create run1
+run2 = trialsPerBlock(randperm(length(trialsPerBlock)));           %shuffle to create run2 
+run3 = trialsPerBlock(randperm(length(trialsPerBlock)));           %shuffle to create run3 
+expStructure = {training, run1, run2, run3};
+nruns = numel(expStructure);                                       %count elements in cell array expStructure to determine number of runs
 
 %% ========= PARAMETERS & DATA PREALLOCATION ========= %
-nruns = 3;
-nblocks = 10;
-
-%make a 10x3 matrix in which each row has 4 occurrences of 40, 3 occurrences of 20 and 3 occurrences of 10; shuffle across rows 
-trialsDistr = [40 40 40 40 20 20 20 10 10 10];                       
-seqTrials = repmat(trialsDistr,3,1);                                
-size(seqTrials);
-rowIndex = repmat((1:3)',[1 10]);
-[~,randomizedColIndex] = sort(rand(3,10),2);
-newLinearIndex = sub2ind([3,10],rowIndex,randomizedColIndex);
-seqAllTrials = seqTrials(newLinearIndex);
-
 contTable = [9 3; 7 1; 8 5; 6 3; 6 6; 4 4; 5 8; 3 6; 3 9; 1 7];   %Contingency table {play, do not play} for each block: 1 = 1/10 ; 2 = 2/10 ; 3 = 3/10 ; 4 = 4/10 ; 5 = 5 / 10; ...
 conTableShuffled = contTable(randperm(10),:);                     %Shuffle contingencies for each block
-cond = [0 0 0 0 0 1 1 1 1 1];                                      %for play_pause or pause_play display, changes every block
+cond = [0 0 0 0 0 1 1 1 1 1];                                     %for play_pause or pause_play display, changes every block
 
-players = randperm(nruns*nblocks);                                %create as many unique "player numbers" as there are blocks
-thisblock = zeros(300,1);                                         %preallocate block nr storage to be recorded for each trial
-condition = zeros(300,1);                                         %preallocate condition (play_pause or pause_play) to be recorded for each trial
+players = randperm(30+1);                                         %create as many unique "player numbers" as there are blocks, + 1 for the practice run
+thisblock = zeros(310,1);                                         %preallocate block nr storage to be recorded for each trial
+condition = zeros(310,1);                                         %preallocate condition (play_pause or pause_play) to be recorded for each trial
 respEndOfBlock = {nblocks,4};                                     %prealocate responses to end-of-block questions
-M = {1, 2, 3, 4, 5, 6};                                           %positions for instruction screens
 
 %% ========= INSTRUCTIONS ========= %
 psychExpInit;                                %start PTB
-
 RestrictKeysForKbCheck([32,37,39]);          %restrict key presses to space, right and left arrows
 exitInstructions = false;                    %cue which determines whether to exit the instructions
 pos = 1;                                     %initial position to go back and forth between the slides
@@ -48,7 +42,7 @@ pos = 1;                                     %initial position to go back and fo
 Screen('DrawTexture', win, texslide1);       %show first slide      
 Screen('Flip',win);                             
 
-while exitInstructions == false                 %loop instructions until space key is pressed
+while exitInstructions == false                 %loop instruction slides until space key is pressed
     [secs, keyCode, deltaSecs] = KbWait([],2);  %waits for key press
     
     %depending on button press, either move pos or exit instructions  
@@ -86,24 +80,33 @@ trialnb = 0; %initial trial value
 
 for i = 1:nruns
     condOrder = cond(randperm(length(cond)));   %vector of 0s and 1s for play_pause or pause_play conditions
+    nblocks = length(expStructure{i});          %determine number of blocks; it will be 1 for training and 10 for the other 3 runs
+    
 for x = 1:nblocks
-    k=1;
-    blocknb = blocknb + 1;
-    P_OA = conTableShuffled(x,:);   %set P_OA = {play, do not play} for this block
-    ntrials = seqAllTrials(i,x);
-    lateTrials = zeros(ntrials,1);  %preallocate late trials occurrences
+          
+        k=1;
+        blocknb = blocknb + 1;
+        
+        if i == 1
+            P_OA = [5 5];                   %set probability at .5 for the training    
+        else
+            P_OA = conTableShuffled(x,:);   %set P_OA = {play, do not play} for this block
+        end
+        
+        ntrials = expStructure{i}(1,x); %set ntrials for each block between 40, 20 and 10
+        lateTrials = zeros(ntrials,1);  %preallocate late trials occurrences
     
-    thisblockplayer = players(:,x); %chose this block's "player"
+        thisblockplayer = players(:,x); %chose this block's "player"
     
-    %First screen of the block, indtroduce the "player"
-    DrawFormattedText(win,['Stai per testare il giocatore numero  ' num2str(thisblockplayer)],'center','center',white);
-    Screen('Flip',win);
-    WaitSecs(.5);
+        %First screen of the block, indtroduce the "player"
+        DrawFormattedText(win,['Stai per testare il giocatore numero  ' num2str(thisblockplayer)],'center','center',white);
+        Screen('Flip',win);
+        WaitSecs(.5);
     
-    %Fixation cross
-    Screen('DrawLines',win,crossLines,crossWidth,crossColor,[xc,yc]);
-    Screen('Flip',win);
-    WaitSecs(.5);
+        %Fixation cross
+        Screen('DrawLines',win,crossLines,crossWidth,crossColor,[xc,yc]);
+        Screen('Flip',win);
+        WaitSecs(.5);
  
         while k <= ntrials %use while instead of for loop to accomodate late trials
             trialnb = trialnb + 1;
@@ -188,11 +191,14 @@ for x = 1:nblocks
             reactionTimes(trialnb,1) = reactionTime;
             choices(trialnb,1) = n;
             outcomes(trialnb,1) = outcome;
-            k=k+1;               
+            k=k+1;
+              
         end
-        
+           
 %% ========= END-OF-BLOCK QUESTIONS ========= %
-
+        if i == 1 %skip the questions if this is the practice run
+            continue
+        else    
         DrawFormattedText(win,'Giudica il valore di questo giocatore con un valore compreso tra -10 e 10.',150,300,white);
         DrawFormattedText(win,'Per esempio:',150,350,white);
         DrawFormattedText(win,'      -10 : «Il giocatore fa sempre vincere la formazione in cui gioca»',150,450,white);
@@ -211,8 +217,7 @@ for x = 1:nblocks
         respQ3=Ask(win,'Compreresti questo giocatore per il prossimo campionato (si o no)?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
-        DrawFormattedText(win,'Ne sei sicuro?',150,300,white);
-        respQ4=Ask(win,'0 : «per niente», 10 : «completamente»',white,black,'GetChar',[800 100 1000 1000],'center',20);
+        respQ4=Ask(win,'Quanto ne sei sicuro in una scala da 0 a 10? ',white,black,'GetChar',[800 100 1000 1000],'center',20);
         Screen('Flip',win);
         
         %Store responses after each block
@@ -220,15 +225,21 @@ for x = 1:nblocks
         respEndOfBlock{blocknb,2}=respQ2;
         respEndOfBlock{blocknb,3}=respQ3;
         respEndOfBlock{blocknb,4}=respQ4;
+        end
 end
 
-%Break after each run & end message
-if i == 3
+%Breaks after runs & end message
+if i == 1 && x == 1
+    RestrictKeysForKbCheck([32]);               %restrict key presses to space
+    DrawFormattedText(win,'FINE DEL TRAINING \n \n Premi SPAZIO quando sei pronto per cominciare con l esperimento vero e proprio. \n \n Se qualcosa non ti è chiaro, alza la mano e uno degli sperimentatori verrà a rispondere alle tue domande.','center','center',white);
+    Screen('Flip',win);
+    [secs, keyCode, deltaSecs] = KbWait([],2);  %wait forkey press (self-paced start after practice session)
+elseif i == 3
     DrawFormattedText(win,'FINE DEL GIOCO \n \n Grazie della partecipazione.','center','center',white);
     Screen('Flip',win);
     WaitSecs(3);
 else
-    RestrictKeysForKbCheck([32,37,39]);          %restrict key presses to space, right and left arrows
+    RestrictKeysForKbCheck([32]);               %restrict key presses to space
     DrawFormattedText(win,'PAUSA \n \n Premi SPAZIO quando sei pronto a ricominciare.','center','center',white);
     Screen('Flip',win);
     [secs, keyCode, deltaSecs] = KbWait([],2);   %wait forkey press (self-paced break after each run)    
