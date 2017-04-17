@@ -196,26 +196,17 @@ for x = 1:nblocks
         end
            
 %% ========= END-OF-BLOCK QUESTIONS ========= %
-        if i >= 2 %skip questions after practice run  
-        DrawFormattedText(win,'Giudica il valore di questo giocatore con un valore compreso tra -10 e 10.',150,300,white);
-        DrawFormattedText(win,'Per esempio:',150,350,white);
-        DrawFormattedText(win,'      -10 : «Il giocatore fa sempre vincere la formazione in cui gioca»',150,450,white);
-        DrawFormattedText(win,'          0 : «Il giocatore non ha alcun impatto nella formazione»',150,500,white);
-        DrawFormattedText(win,'    10 : «Il giocatore fa sempre perdere la formazione in cui gioca»',150,550,white);
-        respQ1=Ask(win,'Inserisci il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
+        if i >= 2 %skip questions after practice run 
+        respQ1=str2num(AskQ1(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20));
         Screen('Flip',win);
         
-        DrawFormattedText(win,'Ora indica quanto sicuro del valore assegnato al giocatore con un valore compreso tra 0 e 10.',150,300,white);
-        DrawFormattedText(win,'Per esempio:',150,350,white);
-        DrawFormattedText(win,'    0  : «per niente»',150,450,white);
-        DrawFormattedText(win,'   10 : «completamente»',150,500,white);
-        respQ2=Ask(win,'Inserisci il valore usando la tastiera, poi premi INVIO per continuare:   ',white,black,'GetChar',[800 300 1000 1000],'center',20);
+        respQ2=str2num(AskQ2(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20));
         Screen('Flip',win);
         
-        respQ3=Ask(win,'Compreresti questo giocatore per il prossimo campionato (si o no)?   ',white,black,'GetChar',[800 100 1000 1000],'center',20);
+        respQ3=AskQ3(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20);
         Screen('Flip',win);
         
-        respQ4=Ask(win,'Quanto ne sei sicuro in una scala da 0 a 10? ',white,black,'GetChar',[800 100 1000 1000],'center',20);
+        respQ4=AskQ4(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20);
         Screen('Flip',win);
         
         %Store responses after each block
