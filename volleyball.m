@@ -13,7 +13,7 @@ end
 %store result names 
 resultname = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'_', DateTime, '.mat'));                          %for choices
 resultnameQuestions = fullfile('Logfiles', strcat('Sub',num2str(subjectID),'questions_', DateTime, '.mat'));        %for end-of-block questions
-
+backupfile = fullfile('Logfiles', strcat('Bckup_Sub',num2str(subjectID), '_', DateTime, '.mat'));                    %backup result file
 %% ========= EXPERIMENT STRUCTURE ========= %
 training = 10;                                                     %set number of trials in the training run
 trialsPerBlock = [40 40 40 40 20 20 20 10 10 10];                  %4x40, 3x30, 3x10 
@@ -31,7 +31,7 @@ cond = [0 0 0 0 0 1 1 1 1 1];                                     %for play_paus
 players = randperm(30+1);                                         %create as many unique "player numbers" as there are blocks, + 1 for the practice run
 thisblock = zeros(310,1);                                         %preallocate block nr storage to be recorded for each trial
 condition = zeros(310,1);                                         %preallocate condition (play_pause or pause_play) to be recorded for each trial
-respEndOfBlock = {length(trialsPerBlock),4};                                     %prealocate responses to end-of-block questions
+respEndOfBlock = {length(trialsPerBlock),4};                      %prealocate responses to end-of-block questions
 
 %% ========= INSTRUCTIONS ========= %
 psychExpInit;                                %start PTB
@@ -102,19 +102,20 @@ for x = 1:nblocks
         %First screen of the block, indtroduce the "player"
         DrawFormattedText(win,['Stai per simulare una partita della squadra numero  ' num2str(thisblockplayer)],'center','center',white);
         Screen('Flip',win);
-        WaitSecs(2);
+        WaitSecs(.1);
     
         %Fixation cross
         Screen('DrawLines',win,crossLines,crossWidth,crossColor,[xc,yc]);
         Screen('Flip',win);
-        WaitSecs(2);
+        WaitSecs(.1);
  
         while k <= ntrials %use while instead of for loop to accomodate late trials
+            save(backupfile)                                    % backs the entire workspace up just in case we have to do a nasty abort
             trialnb = trialnb + 1;
-            thistrial(trialnb,1) = k; %store number of trial
-            thisblock(trialnb,1) = blocknb; %store block nr
-            condition(trialnb,1) = condOrder(:,x); %store condition type (play_pause or pause_play)
-            RestrictKeysForKbCheck([27,37,39]); %restrict key presses to right and left arrows
+            thistrial(trialnb,1) = k;                           %store number of trial
+            thisblock(trialnb,1) = blocknb;                     %store block nr
+            condition(trialnb,1) = condOrder(:,x);              %store condition type (play_pause or pause_play)
+            RestrictKeysForKbCheck([27,37,39]);                 %restrict key presses to right and left arrows
             
             %Present stimuli
             if condOrder(:,x)==0   
@@ -184,7 +185,7 @@ for x = 1:nblocks
                     Screen('DrawTexture', win, texLose,[],imageLose);
             end      
                 Screen('Flip',win);
-                WaitSecs(1);   
+                WaitSecs(.1);   
             
             nLateTrials = numel(find(lateTrials(:,1)==1)); %count how many late trials there have been
             
