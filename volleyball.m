@@ -36,7 +36,7 @@ respEndOfBlock = {length(trialsPerBlock),4};                                    
 %% ========= INSTRUCTIONS ========= %
 psychExpInit;                                %start PTB
 RestrictKeysForKbCheck([32,37,39]);          %restrict key presses to space, right and left arrows
-exitInstructions = false;                    %cue which determines whether to exit the instructions
+exitInstructions = false;                    %cue determining whether to exit the instructions
 pos = 1;                                     %initial position to go back and forth between the slides
 
 Screen('DrawTexture', win, texslide1);       %show first slide      
@@ -60,8 +60,9 @@ while exitInstructions == false                 %loop instruction slides until s
        continue
     end  
      
-    if pos == 8
-       break
+    if pos >= 10
+        pos = 9;
+       continue
     end   
     
     %show instructions slide according to position
@@ -99,14 +100,14 @@ for x = 1:nblocks
         thisblockplayer = players(:,x); %chose this block's "player"
     
         %First screen of the block, indtroduce the "player"
-        DrawFormattedText(win,['Stai per testare il giocatore numero  ' num2str(thisblockplayer)],'center','center',white);
+        DrawFormattedText(win,['Stai per simulare una partita della squadra numero  ' num2str(thisblockplayer)],'center','center',white);
         Screen('Flip',win);
-        WaitSecs(.2);
+        WaitSecs(2);
     
         %Fixation cross
         Screen('DrawLines',win,crossLines,crossWidth,crossColor,[xc,yc]);
         Screen('Flip',win);
-        WaitSecs(.5);
+        WaitSecs(2);
  
         while k <= ntrials %use while instead of for loop to accomodate late trials
             trialnb = trialnb + 1;
@@ -183,7 +184,7 @@ for x = 1:nblocks
                     Screen('DrawTexture', win, texLose,[],imageLose);
             end      
                 Screen('Flip',win);
-                WaitSecs(.2);   
+                WaitSecs(1);   
             
             nLateTrials = numel(find(lateTrials(:,1)==1)); %count how many late trials there have been
             
@@ -197,16 +198,16 @@ for x = 1:nblocks
            
 %% ========= END-OF-BLOCK QUESTIONS ========= %
         if i >= 2 %skip questions after practice run 
-        respQ1=str2num(AskQ1(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20));
+        respQ1=str2num(AskQ1(win,'    ',white,black,'GetChar',[800 300 1000 1500],'center',20)); %AskQ is a PTB function modified to accommodate more text, renamed and saved in local directory
         Screen('Flip',win);
         
-        respQ2=str2num(AskQ2(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20));
+        respQ2=str2num(AskQ2(win,'    ',white,black,'GetChar',[800 300 1000 1500],'center',20)); %AskQ is a PTB function modified to accommodate more text, renamed and saved in local directory
         Screen('Flip',win);
         
-        respQ3=AskQ3(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20);
+        respQ3=AskQ3(win,'    ',white,black,'GetChar',[800 300 1000 1500],'center',20); %AskQ is a PTB function modified to accommodate more text, renamed and saved in local directory
         Screen('Flip',win);
         
-        respQ4=AskQ4(win,'    ',white,black,'GetChar',[800 300 1000 1200],'center',20);
+        respQ4=AskQ4(win,'    ',white,black,'GetChar',[800 300 1000 1500],'center',20); %AskQ is a PTB function modified to accommodate more text, renamed and saved in local directory
         Screen('Flip',win);
         
         %Store responses after each block

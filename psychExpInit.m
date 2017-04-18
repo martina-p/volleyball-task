@@ -56,22 +56,21 @@
     
     %Lose
     [imageHeight, imageWidth, colorChannels] = size(Win);
-    imageLose = [0 0 imageWidth imageHeight];
     imageLose = [0 0 imageWidth./10 imageHeight./10];
     
     %xc = winRect(3)/2;
     %yc = winRect(4)/2;
     [xc, yc] = RectCenterd(winRect);    %get center coordinates
-    xcOffsetLeft = xc-150;              %position left image
-    xcOffsetRight = xc+150;             %position right image
+    xcOffsetLeft = xc-230;              %position left image
+    xcOffsetRight = xc+130;             %position right image
 
     %Play on the left, Pause on the right
-    imageRectPlayLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePlay(:,3)) yc+(imagePlay(:,4))];
-    imageRectPauseRight = [xcOffsetRight, yc, xcOffsetRight+(imagePause(:,3)), yc+(imagePause(:,3))];
+    imageRectPlayLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePlay(:,3)), yc+(imagePlay(:,4))];
+    imageRectPauseRight = [xcOffsetRight, yc, xcOffsetRight+(imagePause(:,3)), yc+(imagePause(:,4))];
     
     %Pause on the left, Play on the right
-    imageRectPlayRight = [xcOffsetRight, yc, xcOffsetRight+(imagePlay(:,3)), yc+(imagePlay(:,3))];
-    imageRectPauseLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePause(:,3)), yc+(imagePause(:,3))];
+    imageRectPlayRight = [xcOffsetRight, yc, xcOffsetRight+(imagePlay(:,3)), yc+(imagePlay(:,4))];
+    imageRectPauseLeft = [xcOffsetLeft, yc, xcOffsetLeft+(imagePause(:,3)), yc+(imagePause(:,4))];
 
     %Win Center position
     imageWin = [xc, yc, xc+imageWin(:,3), yc+imageWin(:,4)]; 
