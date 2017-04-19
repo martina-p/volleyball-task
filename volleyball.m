@@ -89,9 +89,11 @@ for x = 1:nblocks
         blocknb = blocknb + 1;
         
         if i == 1
-            P_OA = [5 5];                   %set probability at .5 for the training    
+            P_OA = [5 5];                   %set probability at .5 for the training
+            deltaP = 0;
         else
-            P_OA = conTableShuffled(x,:);   %set P_OA = {play, do not play} for this block
+            P_OA = conTableShuffled(x,:);       %set P_OA = {play, do not play} for this block
+            deltaP = P_OA(:,1) - P_OA(:,2);     %define deltaP
         end
         
         ntrials = expStructure{i}(1,x); %set ntrials for each block between 40, 20 and 10
@@ -115,8 +117,9 @@ for x = 1:nblocks
             thistrial(trialnb,1) = k;                           %store number of trial
             thisblock(trialnb,1) = blocknb;                     %store block nr
             condition(trialnb,1) = condOrder(:,x);              %store condition type (play_pause or pause_play)
-            thisP_OA(trialnb,1) = P_OA(:,1);                        %store P_OA
-            thisP_OnotA(trialnb,1) = P_OA(:,2);                    %store P_OnotA
+            thisP_OA(trialnb,1) = P_OA(:,1);                    %store P_OA
+            thisP_OnotA(trialnb,1) = P_OA(:,2);                 %store P_OnotA
+            thisdeltaP(trialnb,1) = deltaP;
             RestrictKeysForKbCheck([27,37,39]);                 %restrict key presses to right and left arrows
             
             %Present stimuli
@@ -227,8 +230,16 @@ if i == 1 && x == 1
     DrawFormattedText(win,'FINE DEL TRAINING \n \n Premi SPAZIO quando sei pronto per cominciare con l esperimento vero e proprio. \n \n Se qualcosa non ti è chiaro, alza la mano e uno degli sperimentatori verrà a rispondere alle tue domande.','center','center',white);
     Screen('Flip',win);
     [secs, keyCode, deltaSecs] = KbWait([],2);  %wait forkey press (self-paced start after practice session)
-elseif i == 4
-    DrawFormattedText(win,'FINE DEL GIOCO \n \n Grazie della partecipazione.','center','center',white);
+elseif i == 4    
+    %calculate and show earning
+    pickblock = randsample(thisblock,1);
+    if pickblock == 1 %this is not to pick the first block, which is practice
+       pickblock = 2;
+    end    
+    score = abs(thisdeltaP(pickblock) - respEndOfBlock{pickblock,1});
+    earning = 5+(0.1*(10-score).^2);   
+    DrawFormattedText(win,'FINE DEL GIOCO \n \n Grazie della partecipazione. \n \n Hai vinto Euro:','center','center',white);
+    DrawFormattedText(win,num2str(earning),800,800,white);
     Screen('Flip',win);
     WaitSecs(3);
 else
@@ -242,7 +253,7 @@ end
        
 %% ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, thisblock, thisP_OA, thisP_OnotA, condition, thistrial, choices, outcomes, reactionTimes];
+data = [subject, thisblock, thisP_OA, thisP_OnotA, thisdeltaP, condition, thistrial, choices, outcomes, reactionTimes];
 dataQuestions = (respEndOfBlock);
 save(resultnameQuestions, 'dataQuestions');
 save(resultname, 'data');
