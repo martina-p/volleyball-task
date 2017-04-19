@@ -231,13 +231,11 @@ if i == 1 && x == 1
     Screen('Flip',win);
     [secs, keyCode, deltaSecs] = KbWait([],2);  %wait forkey press (self-paced start after practice session)
 elseif i == 4    
-    %calculate and show earning
-    pickblock = randsample(thisblock,1);
-    if pickblock == 1 %this is not to pick the first block, which is practice
-       pickblock = 2;
-    end    
-    score = abs(thisdeltaP(pickblock) - respEndOfBlock{pickblock,1});
-    earning = 5+(0.1*(10-score).^2);   
+    %calculate earning 
+    pickblock = randsample(2:31,1);                                         %pick a random block b/w 2 and 31 (1 is training)
+    score = abs(thisdeltaP(pickblock) - respEndOfBlock{pickblock,1});       %look up that block's respQ1 and subtract it from that block's deltaP
+    earning = 5+(0.1*(10-score).^2);                                        %plug score in payment equation and add 5 show-up fee
+    %display earning
     DrawFormattedText(win,'FINE DEL GIOCO \n \n Grazie della partecipazione. \n \n Hai vinto Euro:','center','center',white);
     DrawFormattedText(win,num2str(earning),800,800,white);
     Screen('Flip',win);
