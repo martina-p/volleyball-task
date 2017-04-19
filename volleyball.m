@@ -60,8 +60,8 @@ while exitInstructions == false                 %loop instruction slides until s
        continue
     end  
      
-    if pos >= 10
-        pos = 9;
+    if pos >= 11
+        pos = 10;
        continue
     end   
     
@@ -115,6 +115,8 @@ for x = 1:nblocks
             thistrial(trialnb,1) = k;                           %store number of trial
             thisblock(trialnb,1) = blocknb;                     %store block nr
             condition(trialnb,1) = condOrder(:,x);              %store condition type (play_pause or pause_play)
+            thisP_OA(trialnb,1) = P_OA(:,1);                        %store P_OA
+            thisP_OnotA(trialnb,1) = P_OA(:,2);                    %store P_OnotA
             RestrictKeysForKbCheck([27,37,39]);                 %restrict key presses to right and left arrows
             
             %Present stimuli
@@ -240,7 +242,7 @@ end
        
 %% ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, thisblock, condition, thistrial, choices, outcomes, reactionTimes];
+data = [subject, thisblock, thisP_OA, thisP_OnotA, condition, thistrial, choices, outcomes, reactionTimes];
 dataQuestions = (respEndOfBlock);
 save(resultnameQuestions, 'dataQuestions');
 save(resultname, 'data');

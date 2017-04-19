@@ -115,9 +115,9 @@ white = [255 255 255];
 line1 = 'Questa simulazione è terminata.';
 line2 = '\n \n \n Ora giudica il valore di questo giocatore con un valore compreso tra -10 e 10.';
 line3 = '\n\n Per esempio:';
-line4 = '\n \n \n -10: il giocatore fa sempre perdere la formazione in cui gioca';
-line5 = '\n \n 0: il giocatore non ha alcun impatto sulla formazione';
-line6 = '\n \n 10: Il giocatore fa sempre vincere la formazione in cui gioca';
+line4 = '\n \n \n -10: il giocatore fa sempre perdere la squadra in cui gioca';
+line5 = '\n \n 0: il giocatore non ha alcun impatto sulla squadra';
+line6 = '\n \n 10: Il giocatore fa sempre vincere la squadra in cui gioca';
 line7 = '\n \n \n Inserisci adesso la tua risposta con la tastiera, poi premi INVIO per continuare o BACKSPACE per cancellare:';  
 
 DrawFormattedText(window,[line1 line2 line3 line4 line5 line6 line7],'center','center',white);

@@ -114,7 +114,7 @@ white = [255 255 255];
 
 line1 = 'La tua risposta è stata registrata correttamente.';
 line2 = '\n \n \n Ora rispondi (SI o NO): ';
-line3 = '\n \n Compreresti questo giocatore al prossimo campionato? ';
+line3 = '\n \n Suggeriresti alla squadra di comprare il giocatore? ';
 line4 = '\n \n \n Inserisci adesso la tua risposta con la tastiera, poi premi INVIO per continuare o BACKSPACE per cancellare:';  
 
 DrawFormattedText(window,[line1 line2 line3 line4],'center','center',white);
