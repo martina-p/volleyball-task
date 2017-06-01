@@ -119,7 +119,7 @@ for x = 1:nblocks
             condition(trialnb,1) = condOrder(:,x);              %store condition type (play_pause or pause_play)
             thisP_OA(trialnb,1) = P_OA(:,1);                    %store P_OA
             thisP_OnotA(trialnb,1) = P_OA(:,2);                 %store P_OnotA
-            thisdeltaP(trialnb,1) = deltaP;
+            thisdeltaP(trialnb,1) = deltaP;                     
             RestrictKeysForKbCheck([27,37,39]);                 %restrict key presses to right and left arrows
             
             %Present stimuli
@@ -193,6 +193,7 @@ for x = 1:nblocks
                 WaitSecs(.1);   
             
             nLateTrials = numel(find(lateTrials(:,1)==1)); %count how many late trials there have been
+            nLateTrialsThisBlock(trialnb,1) = nLateTrials; %this is for adding it to data table
             
             %Store iterations
             reactionTimes(trialnb,1) = reactionTime;
@@ -204,6 +205,9 @@ for x = 1:nblocks
            
 %% ========= END-OF-BLOCK QUESTIONS ========= %
         if i >= 2 %skip questions after practice run 
+        respQ0=str2num(Ask(win,'hi!',white,black,'GetChar',[800 300 1000 1500],'center',20)); %AskQ is a PTB function modified to accommodate more text, renamed and saved in local directory
+        Screen('Flip',win);    
+            
         respQ1=str2num(AskQ1(win,'    ',white,black,'GetChar',[800 300 1000 1500],'center',20)); %AskQ is a PTB function modified to accommodate more text, renamed and saved in local directory
         Screen('Flip',win);
         
@@ -251,7 +255,7 @@ end
        
 %% ========= SAVE DATA & CLOSE ========= %
 subject(1:trialnb,1) = subjectID;
-data = [subject, thisblock, thisP_OA, thisP_OnotA, thisdeltaP, condition, thistrial, choices, outcomes, reactionTimes];
+data = [subject, thisblock, thisP_OA, thisP_OnotA, thisdeltaP, condition, thistrial, choices, outcomes, reactionTimes, nLateTrialsThisBlock];
 dataQuestions = (respEndOfBlock);
 save(resultnameQuestions, 'dataQuestions');
 save(resultname, 'data');

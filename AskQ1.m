@@ -133,7 +133,9 @@ if strcmp(replyFun,'GetChar')
     Screen('Flip', window, 0, dontClear);   % flip it to the screen
     i=2;
     reply(i)=GetChar(0,1);  % get the 2nd typed character (with no timing info. and ascii codes only)
-
+    
+    while ~eq(reply(i),13)
+             
     while reply(i)==8  % backspace/delete was typed
         i=1;
         Screen('FillRect', window, bgColor);
@@ -183,10 +185,11 @@ if strcmp(replyFun,'GetChar')
             end;
         end;
     end;
-
+    end;
+    
     Screen('FillRect', window, bgColor);
     Screen('Flip', window);
-
+    end
     for d=min(find(reply==8 | reply==10 | reply==13))-1 %#ok<MXFND>
         reply = reply(1:d);
     end;
@@ -196,7 +199,7 @@ if strcmp(replyFun,'GetChar')
 else
     reply=eval(replyFun);
 end;
-
+                    
 % Restore text size:
 Screen('TextSize', window ,oldFontSize);
 
